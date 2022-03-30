@@ -1,4 +1,4 @@
-package com.java.logCollect.kafka;
+package com.java.logCollect.collect;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -10,7 +10,7 @@ public class TailService {
 
 	private final static Logger logger = LoggerFactory.getLogger(TailService.class);
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 		if (args.length < 1) {
 			logger.error("Usage : TailService [logfile]");
 			System.exit(0);
@@ -22,6 +22,8 @@ public class TailService {
 			new TailLog(queue, arg).start();
 		}
 
+//		while (true)
+//			System.out.print(queue.take());
 		new MsgSender(queue).start();
 	}
 

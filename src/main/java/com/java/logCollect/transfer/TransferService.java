@@ -19,7 +19,7 @@ import java.net.URL;
 import java.util.*;
 
 /**
- * @author Ryan X,
+ * @author Ryan X
  * @date 2021/12/24
  */
 public class TransferService {
@@ -29,7 +29,7 @@ public class TransferService {
         stream.print();
         writeToElastic(stream);
         // execute program
-        env.execute("Viper Flink!");
+        env.execute("Transfer Job");
     }
 
     public static DataStream<String> readFromKafka(StreamExecutionEnvironment env) {

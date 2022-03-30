@@ -1,4 +1,4 @@
-package com.java.logCollect.kafka;
+package com.java.logCollect.collect;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
