@@ -2,4 +2,5 @@ target
 logs
 .idea
 test.log
+test2.log
 logcount.iml

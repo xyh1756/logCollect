@@ -7,7 +7,7 @@
 	<version>1.0</version>
 	<packaging>jar</packaging>
 
-	<name>logcount</name>
+	<name>logCollect</name>
 	<url>http://maven.apache.org</url>
 
 	<repositories>
@@ -15,6 +15,7 @@
 			<id>cloudera</id>
 			<url>https://repository.cloudera.com/cloudera/cloudera-repos</url>
 		</repository>
+
 		<repository>
 			<id>apache.snapshots</id>
 			<name>Apache Development Snapshot Repository</name>
@@ -75,6 +76,11 @@
 			<groupId>org.apache.flink</groupId>
 			<artifactId>flink-streaming-java_2.12</artifactId>
 			<version>1.10.0</version>
+		</dependency>
+		<dependency>
+			<groupId>co.paralleluniverse</groupId>
+			<artifactId>quasar-core</artifactId>
+			<version>0.8.0</version>
 		</dependency>
 
 		<dependency>

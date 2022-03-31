@@ -33,9 +33,9 @@ public class GenerateService {
                 String str = "abc" + i + "\n";
                 MappedByteBuffer buffer = channel.map(FileChannel.MapMode.READ_WRITE, raf.length(), str.length());
                 buffer.put(str.getBytes());
-//                buffer.force();
+                buffer.force();
                 i++;
-//                sleep(2000);
+                sleep(1000);
             }
         } catch (Exception e) {
             e.printStackTrace();

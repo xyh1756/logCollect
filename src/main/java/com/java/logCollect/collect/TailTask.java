@@ -6,20 +6,24 @@ import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
-import java.util.concurrent.BlockingQueue;
+
+import com.java.logCollect.model.TaskEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class TailLog extends Thread {
-	private static final Logger logger = LoggerFactory.getLogger(TailLog.class);
-	private final BlockingQueue<String> queue;
+public class TailTask implements Runnable {
+	private static final Logger logger = LoggerFactory.getLogger(TailTask.class);
 	private RandomAccessFile raf;
 	private long lastSize = 0L;
+	private String path;
+	private String topic;
+	public boolean running = true;
 
-	public TailLog(BlockingQueue<String> queue, String logName) {
-		this.queue = queue;
+	public TailTask(TaskEntry taskEntry) {
+		this.path = taskEntry.path;
+		this.topic = taskEntry.topic;
 		try {
-			this.raf = new RandomAccessFile(logName, "rw");
+			this.raf = new RandomAccessFile(path, "rw");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -28,19 +32,19 @@ public class TailLog extends Thread {
 	public void run() {
 		FileChannel channel = this.raf.getChannel();
 		try {
-			while (true) {
-				while(this.raf.length() <= this.lastSize) {
-					sleep(300);
+			while (running) {
+				while(running && this.raf.length() <= this.lastSize) {
+					Thread.sleep(300);
 				}
 
 				MappedByteBuffer buffer = channel.map(MapMode.READ_ONLY, this.lastSize, this.raf.length() - this.lastSize);
 				StringBuilder line = new StringBuilder();
 
-				while(buffer.remaining() > 0) {
+				while(running && buffer.remaining() > 0) {
 					line.append((char)buffer.get());
 				}
 
-				this.queue.put(line.toString());
+				TailService.queueMap.get(topic).put(line.toString());
 				this.lastSize = this.raf.length();
 			}
 		} catch (InterruptedException | IOException e) {
