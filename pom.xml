@@ -82,6 +82,16 @@
 			<artifactId>quasar-core</artifactId>
 			<version>0.8.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.ibm.etcd</groupId>
+			<artifactId>etcd-java</artifactId>
+			<version>0.0.19</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>5.3.17</version>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>

@@ -15,6 +15,8 @@ import org.apache.http.client.CredentialsProvider;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.client.Requests;
+import org.springframework.stereotype.Service;
+
 import java.net.URL;
 import java.util.*;
 
@@ -22,19 +24,27 @@ import java.util.*;
  * @author Ryan X
  * @date 2021/12/24
  */
+@Service
 public class TransferService {
-    public static void main(String[] args) throws Exception {
+    public TransferService () {
+
+    }
+
+    public void run() {
         final StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
         DataStream<String> stream = readFromKafka(env);
         stream.print();
         writeToElastic(stream);
-        // execute program
-        env.execute("Transfer Job");
+        try {
+            env.execute("Transfer Job");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
-    public static DataStream<String> readFromKafka(StreamExecutionEnvironment env) {
+    public DataStream<String> readFromKafka(StreamExecutionEnvironment env) {
         env.enableCheckpointing(5000);
-        // set up the execution environment
+
         Properties properties = new Properties();
         properties.setProperty("bootstrap.servers", "localhost:9097,localhost:9098,localhost:9099");
         properties.setProperty("group.id", "recsys");
@@ -43,9 +53,9 @@ public class TransferService {
                 new FlinkKafkaConsumer09<>("recsys", new SimpleStringSchema(), properties));
     }
 
-    public static void writeToElastic(DataStream<String> input) {
+    public void writeToElastic(DataStream<String> input) {
         try {
-            // Add elasticsearch hosts on startup
+
             List<HttpHost> transports = new ArrayList<>();
             URL url = new URL("http://127.0.0.1:9200");
             transports.add(new HttpHost(url.getHost(), url.getPort()));
@@ -58,7 +68,7 @@ public class TransferService {
                     return Requests
                             .indexRequest()
                             .index("log-collect")
-                            .type("test-log")
+                            .type("log")
                             .source(esJson);
                 }
 

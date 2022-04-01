@@ -18,17 +18,17 @@ public class MsgSender implements Runnable {
 	private final BlockingQueue<String> queue;
 	private final String topic;
 	public boolean running = true;
-//	private final KafkaProducer<String, String> producer;
+	private final KafkaProducer<String, String> producer;
 
 	public MsgSender(String topic, BlockingQueue<String> queue) {
 		this.queue = queue;
 		this.topic = topic;
-//		Properties props = new Properties();
-//		props.put("bootstrap.servers", "127.0.0.1:9097,127.0.0.1:9098,127.0.0.1:9099");
-//		props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-//		props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+		Properties props = new Properties();
+		props.put("bootstrap.servers", "127.0.0.1:9097,127.0.0.1:9098,127.0.0.1:9099");
+		props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+		props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
-//		producer = new KafkaProducer<>(props);
+		producer = new KafkaProducer<>(props);
 	}
 
 	@Override
@@ -37,12 +37,11 @@ public class MsgSender implements Runnable {
 			try {
 				String data = queue.take();
 				if (!data.replace("\n", "").replace("\r", "").equals("")) {
-//					String timestamp = sdf.format(new Date());
+					String timestamp = sdf.format(new Date());
 					for (String line : data.split("\n")) {
-						System.out.println(line);
-//						ProducerRecord<String, String> record = new ProducerRecord<>(topic, timestamp, line);
+						ProducerRecord<String, String> record = new ProducerRecord<>(topic, timestamp, line);
 						logger.info("sending line :{}, {}", topic, line);
-//						producer.send(record);
+						producer.send(record);
 					}
 
 				}
